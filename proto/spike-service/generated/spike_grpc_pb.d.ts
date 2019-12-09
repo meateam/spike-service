@@ -1,0 +1,41 @@
+// package: spike
+// file: spike.proto
+
+/* tslint:disable */
+/* eslint-disable */
+
+import * as grpc from "grpc";
+import * as spike_pb from "./spike_pb";
+
+interface ISpikeService extends grpc.ServiceDefinition<grpc.UntypedServiceImplementation> {
+    getSpikeToken: ISpikeService_IGetSpikeToken;
+}
+
+interface ISpikeService_IGetSpikeToken extends grpc.MethodDefinition<spike_pb.GetSpikeTokenRequest, spike_pb.SpikeToken> {
+    path: string; // "/spike.Spike/GetSpikeToken"
+    requestStream: boolean; // false
+    responseStream: boolean; // false
+    requestSerialize: grpc.serialize<spike_pb.GetSpikeTokenRequest>;
+    requestDeserialize: grpc.deserialize<spike_pb.GetSpikeTokenRequest>;
+    responseSerialize: grpc.serialize<spike_pb.SpikeToken>;
+    responseDeserialize: grpc.deserialize<spike_pb.SpikeToken>;
+}
+
+export const SpikeService: ISpikeService;
+
+export interface ISpikeServer {
+    getSpikeToken: grpc.handleUnaryCall<spike_pb.GetSpikeTokenRequest, spike_pb.SpikeToken>;
+}
+
+export interface ISpikeClient {
+    getSpikeToken(request: spike_pb.GetSpikeTokenRequest, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
+    getSpikeToken(request: spike_pb.GetSpikeTokenRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
+    getSpikeToken(request: spike_pb.GetSpikeTokenRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
+}
+
+export class SpikeClient extends grpc.Client implements ISpikeClient {
+    constructor(address: string, credentials: grpc.ChannelCredentials, options?: object);
+    public getSpikeToken(request: spike_pb.GetSpikeTokenRequest, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
+    public getSpikeToken(request: spike_pb.GetSpikeTokenRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
+    public getSpikeToken(request: spike_pb.GetSpikeTokenRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
+}

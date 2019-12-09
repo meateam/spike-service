@@ -1,0 +1,9 @@
+export const redisHost = process.env.REDIS_URL;
+export const ClientId = process.env.SPIKE_CLIENT_ID;
+export const ClientSecret = process.env.SPIKE_CLIENT_SECRET;
+export const spikeURL = process.env.SPIKE_TOKEN_URL;
+export const tokenGrantType = process.env.PHONEBOOK_GRANT_TYPE;
+export const tokenAudience = process.env.PHONEBOOK_AUDIENCE;
+export const tokenRedisKeyName = process.env.PHONEBOOK_REDIS_KEY;
+export const spikePublicKeyFullPath = './key.pem';
+export const useRedis = true;
