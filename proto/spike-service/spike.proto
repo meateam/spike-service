@@ -13,8 +13,8 @@ message Client {
 
 
 message GetSpikeTokenRequest {
-    required string grant_type = 1;
-    required string audience = 2;
+    string grant_type = 1;
+    string audience = 2;
     Client client = 3;
 }
 
