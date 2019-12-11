@@ -7,6 +7,7 @@
     "start": "npm run build && node ./dist/index.js",
     "build": "tsc",
     "serve": "node ./dist/index.js",
+    "test": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "author": "Yonatan Tal",
