@@ -12,7 +12,7 @@ class Server implements ISpikeServer {
 
     constructor() {
         this.tokenFunctionMap = new Map<string, any>();
-        this.spikeKey = fs.readFileSync(spikePublicKeyFullPath);
+        this.spikeKey = fs.readFileSync('/usr/src/app/utils/publickey.pem');
     }
 
     async getSpikeToken(call: grpc.ServerUnaryCall<GetSpikeTokenRequest>, callback: grpc.sendUnaryData<SpikeToken>) {
