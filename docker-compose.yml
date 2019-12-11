@@ -1,0 +1,19 @@
+version: '2.1'
+services:
+  spike-service:
+    image: spike-service:latest
+    ports:
+      - '8080:8080'
+    environment:
+      SPIKE_CLIENT_ID: "CLIENT_ID"
+      SPIKE_CLIENT_SECRET: "CLIENT_SECRET"
+      REDIS_URL: 'redis://redis:6379'
+      SPIKE_TOKEN_URL: "https://localhost:1337/oauth2/token"
+      SPIKE_PUBLIC_KEY_FULL_PATH: "/usr/src/app/utils/publickey.pem"
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    depends_on:
+      - redis
+  redis:
+    image: 'redis:alpine'
+    ports:
+      - '6379:6379'
