@@ -5,10 +5,11 @@ services:
     ports:
       - '8080:8080'
     environment:
+      AUDIENCE: "MyAudience"
       SPIKE_CLIENT_ID: "CLIENT_ID"
       SPIKE_CLIENT_SECRET: "CLIENT_SECRET"
       REDIS_URL: 'redis://redis:6379'
-      SPIKE_TOKEN_URL: "https://localhost:1337/oauth2/token"
+      SPIKE_TOKEN_URL: "https://spike.westeurope.cloudapp.azure.com:1337/oauth2/token"
       SPIKE_PUBLIC_KEY_FULL_PATH: "/usr/src/app/utils/publickey.pem"
       NODE_TLS_REJECT_UNAUTHORIZED: 0
     depends_on:

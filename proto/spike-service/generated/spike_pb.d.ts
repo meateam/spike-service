@@ -83,3 +83,59 @@ export namespace SpikeToken {
         token: string,
     }
 }
+
+export class ValidateTokenResquest extends jspb.Message { 
+    getToken(): string;
+    setToken(value: string): void;
+
+    getAudience(): string;
+    setAudience(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ValidateTokenResquest.AsObject;
+    static toObject(includeInstance: boolean, msg: ValidateTokenResquest): ValidateTokenResquest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ValidateTokenResquest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ValidateTokenResquest;
+    static deserializeBinaryFromReader(message: ValidateTokenResquest, reader: jspb.BinaryReader): ValidateTokenResquest;
+}
+
+export namespace ValidateTokenResquest {
+    export type AsObject = {
+        token: string,
+        audience: string,
+    }
+}
+
+export class ValidateTokenResponse extends jspb.Message { 
+    getValid(): boolean;
+    setValid(value: boolean): void;
+
+    clearScopesList(): void;
+    getScopesList(): Array<string>;
+    setScopesList(value: Array<string>): void;
+    addScopes(value: string, index?: number): string;
+
+    getMessage(): string;
+    setMessage(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ValidateTokenResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: ValidateTokenResponse): ValidateTokenResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ValidateTokenResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ValidateTokenResponse;
+    static deserializeBinaryFromReader(message: ValidateTokenResponse, reader: jspb.BinaryReader): ValidateTokenResponse;
+}
+
+export namespace ValidateTokenResponse {
+    export type AsObject = {
+        valid: boolean,
+        scopesList: Array<string>,
+        message: string,
+    }
+}

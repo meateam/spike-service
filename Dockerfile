@@ -12,7 +12,7 @@ WORKDIR /usr/src/app
 COPY --from=0 /usr/src/app/package.json /usr/src/app/package-lock.json ./
 COPY --from=0 /usr/src/app/dist ./dist
 COPY --from=0 /usr/src/app/proto ./proto
-COPY --from=0 /usr/src/app/proto ./utils
+COPY --from=0 /usr/src/app/utils ./utils
 RUN npm install
 EXPOSE 8080
 CMD ["npm", "start"]
