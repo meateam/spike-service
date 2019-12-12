@@ -26,6 +26,28 @@ function deserialize_spike_SpikeToken(buffer_arg) {
   return spike_pb.SpikeToken.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_spike_ValidateTokenResponse(arg) {
+  if (!(arg instanceof spike_pb.ValidateTokenResponse)) {
+    throw new Error('Expected argument of type spike.ValidateTokenResponse');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_spike_ValidateTokenResponse(buffer_arg) {
+  return spike_pb.ValidateTokenResponse.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
+function serialize_spike_ValidateTokenResquest(arg) {
+  if (!(arg instanceof spike_pb.ValidateTokenResquest)) {
+    throw new Error('Expected argument of type spike.ValidateTokenResquest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_spike_ValidateTokenResquest(buffer_arg) {
+  return spike_pb.ValidateTokenResquest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 
 var SpikeService = exports.SpikeService = {
   getSpikeToken: {
@@ -38,6 +60,17 @@ var SpikeService = exports.SpikeService = {
     requestDeserialize: deserialize_spike_GetSpikeTokenRequest,
     responseSerialize: serialize_spike_SpikeToken,
     responseDeserialize: deserialize_spike_SpikeToken,
+  },
+  validateToken: {
+    path: '/spike.Spike/ValidateToken',
+    requestStream: false,
+    responseStream: false,
+    requestType: spike_pb.ValidateTokenResquest,
+    responseType: spike_pb.ValidateTokenResponse,
+    requestSerialize: serialize_spike_ValidateTokenResquest,
+    requestDeserialize: deserialize_spike_ValidateTokenResquest,
+    responseSerialize: serialize_spike_ValidateTokenResponse,
+    responseDeserialize: deserialize_spike_ValidateTokenResponse,
   },
 };
 
