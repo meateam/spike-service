@@ -20,11 +20,11 @@ class Server implements ISpikeServer {
         const grantType = call.request.getGrantType();
         console.log(`Getting token for audience = ${audience}, grant_type = ${grantType}`);
         let getToken = this.tokenFunctionMap.get(audience);
-        if (!getToken) {
+        if (!this.tokenFunctionMap.get(audience)) {
             const options = this.buildOptions(audience, grantType);
             console.log('Creating getToken function');
             getToken = getTokenCreator(options);
-            this.tokenFunctionMap.set(audience, getToken);
+            this.tokenFunctionMap.set(audience, getTokenCreator(options));
         }
         const token = await getToken();
         const spikeToken = new SpikeToken();
