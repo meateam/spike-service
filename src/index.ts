@@ -1,9 +1,10 @@
 import * as grpc from  'grpc';
 import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
-import { SpikeService, ISpikeServer } from '../proto/spike-service/generated/spike_grpc_pb';
-import { SpikeToken, GetSpikeTokenRequest, ValidateTokenResponse, ValidateTokenResquest } from '../proto/spike-service/generated/spike_pb';
-import { ClientId, ClientSecret, redisHost, spikeURL, spikePublicKeyFullPath, host, port, selfAudience } from './config';
+import { SpikeService, ISpikeServer, SpikeClient } from '../proto/spike-service/generated/spike_grpc_pb';
+import { SpikeToken, GetSpikeTokenRequest, ValidateTokenResponse, ValidateTokenRequest, Client } from '../proto/spike-service/generated/spike_pb';
+import { clientId, clientSecret, redisHost, spikeURL, spikePublicKeyFullPath,
+     host, port, selfAudience, grantTypeDef } from './config';
 const getTokenCreator = require('spike-get-token');
 
 class Server implements ISpikeServer {
@@ -12,17 +13,18 @@ class Server implements ISpikeServer {
 
     constructor() {
         this.tokenFunctionMap = new Map<string, any>();
-        this.spikeKey = fs.readFileSync('/usr/src/app/utils/publickey.pem');
+        this.spikeKey = fs.readFileSync(spikePublicKeyFullPath);
     }
 
     async getSpikeToken(call: grpc.ServerUnaryCall<GetSpikeTokenRequest>, callback: grpc.sendUnaryData<SpikeToken>) {
         const audience = call.request.getAudience();
-        const grantType = call.request.getGrantType();
+        const grantType = call.request.getGrantType() || grantTypeDef;
+        const client = call.request.getClient();
         console.log(`Getting token for audience = ${audience}, grant_type = ${grantType}`);
         let getToken = this.tokenFunctionMap.get(audience);
         if (!this.tokenFunctionMap.get(audience)) {
-            const options = this.buildOptions(audience, grantType);
-            console.log('Creating getToken function');
+            const options = this.buildOptions(audience, grantType, client);
+            console.log(`Creating getToken function for audience = ${options.tokenAudience}`);
             getToken = getTokenCreator(options);
             this.tokenFunctionMap.set(audience, getTokenCreator(options));
         }
@@ -35,7 +37,7 @@ class Server implements ISpikeServer {
         return token;
     }
 
-    validateToken(call: grpc.ServerUnaryCall<ValidateTokenResquest>, callback: grpc.sendUnaryData<ValidateTokenResponse>) {
+    validateToken(call: grpc.ServerUnaryCall<ValidateTokenRequest>, callback: grpc.sendUnaryData<ValidateTokenResponse>) {
         const token = call.request.getToken();
         console.log(`Checking token = ${token}`);
 
@@ -65,7 +67,11 @@ class Server implements ISpikeServer {
 
     }
 
-    private buildOptions(audience: string, grantType: string) {
+    private buildOptions(audience: string, grantType: string, reqClient: Client | undefined) {
+
+        const ClientId =  reqClient?.getId() || clientId;
+        const ClientSecret = reqClient?.getSecret() || clientSecret;
+
         return {
             redisHost,
             ClientId,

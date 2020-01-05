@@ -6,7 +6,6 @@
   "scripts": {
     "start": "npm run build && node ./dist/index.js",
     "build": "tsc",
-    "test": "npm run tslint",
     "serve": "node ./dist/index.js",
     "test": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
@@ -30,7 +29,7 @@
     "grpc-tools": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
     "redis": "^2.8.0",
-    "spike-get-token": "^1.0.1",
+    "spike-get-token": "^1.1.1",
     "typescript": "^3.7.3"
   }
 }

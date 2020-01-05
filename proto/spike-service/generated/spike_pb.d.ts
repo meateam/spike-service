@@ -84,7 +84,7 @@ export namespace SpikeToken {
     }
 }
 
-export class ValidateTokenResquest extends jspb.Message { 
+export class ValidateTokenRequest extends jspb.Message { 
     getToken(): string;
     setToken(value: string): void;
 
@@ -93,16 +93,16 @@ export class ValidateTokenResquest extends jspb.Message {
 
 
     serializeBinary(): Uint8Array;
-    toObject(includeInstance?: boolean): ValidateTokenResquest.AsObject;
-    static toObject(includeInstance: boolean, msg: ValidateTokenResquest): ValidateTokenResquest.AsObject;
+    toObject(includeInstance?: boolean): ValidateTokenRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ValidateTokenRequest): ValidateTokenRequest.AsObject;
     static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
     static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-    static serializeBinaryToWriter(message: ValidateTokenResquest, writer: jspb.BinaryWriter): void;
-    static deserializeBinary(bytes: Uint8Array): ValidateTokenResquest;
-    static deserializeBinaryFromReader(message: ValidateTokenResquest, reader: jspb.BinaryReader): ValidateTokenResquest;
+    static serializeBinaryToWriter(message: ValidateTokenRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ValidateTokenRequest;
+    static deserializeBinaryFromReader(message: ValidateTokenRequest, reader: jspb.BinaryReader): ValidateTokenRequest;
 }
 
-export namespace ValidateTokenResquest {
+export namespace ValidateTokenRequest {
     export type AsObject = {
         token: string,
         audience: string,
