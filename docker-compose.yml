@@ -6,6 +6,7 @@ services:
       - '8080:8080'
     environment:
       AUDIENCE: "kartoffel"
+      GRANT_TYPE: "client_credentials"
       SPIKE_CLIENT_ID: "EPBpjCiczupCXZgBEq3ARZCinUt4LSXtOsVrI1Ub"
       SPIKE_CLIENT_SECRET: "u5qxEK0sy17ReZ7t8aVeN1gCcdI9hRiM78i9J_9Z6jA2YWcvbgczcchKqZ4WnXOsdT6jxmuVCLC3~RXuVcE5EsOG4JJi~B8AJQSB"
       REDIS_URL: 'redis://redis:6379'

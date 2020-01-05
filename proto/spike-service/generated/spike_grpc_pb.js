@@ -26,6 +26,17 @@ function deserialize_spike_SpikeToken(buffer_arg) {
   return spike_pb.SpikeToken.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_spike_ValidateTokenRequest(arg) {
+  if (!(arg instanceof spike_pb.ValidateTokenRequest)) {
+    throw new Error('Expected argument of type spike.ValidateTokenRequest');
+  }
+  return Buffer.from(arg.serializeBinary());
+}
+
+function deserialize_spike_ValidateTokenRequest(buffer_arg) {
+  return spike_pb.ValidateTokenRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_spike_ValidateTokenResponse(arg) {
   if (!(arg instanceof spike_pb.ValidateTokenResponse)) {
     throw new Error('Expected argument of type spike.ValidateTokenResponse');
@@ -35,17 +46,6 @@ function serialize_spike_ValidateTokenResponse(arg) {
 
 function deserialize_spike_ValidateTokenResponse(buffer_arg) {
   return spike_pb.ValidateTokenResponse.deserializeBinary(new Uint8Array(buffer_arg));
-}
-
-function serialize_spike_ValidateTokenResquest(arg) {
-  if (!(arg instanceof spike_pb.ValidateTokenResquest)) {
-    throw new Error('Expected argument of type spike.ValidateTokenResquest');
-  }
-  return Buffer.from(arg.serializeBinary());
-}
-
-function deserialize_spike_ValidateTokenResquest(buffer_arg) {
-  return spike_pb.ValidateTokenResquest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 
@@ -65,10 +65,10 @@ var SpikeService = exports.SpikeService = {
     path: '/spike.Spike/ValidateToken',
     requestStream: false,
     responseStream: false,
-    requestType: spike_pb.ValidateTokenResquest,
+    requestType: spike_pb.ValidateTokenRequest,
     responseType: spike_pb.ValidateTokenResponse,
-    requestSerialize: serialize_spike_ValidateTokenResquest,
-    requestDeserialize: deserialize_spike_ValidateTokenResquest,
+    requestSerialize: serialize_spike_ValidateTokenRequest,
+    requestDeserialize: deserialize_spike_ValidateTokenRequest,
     responseSerialize: serialize_spike_ValidateTokenResponse,
     responseDeserialize: deserialize_spike_ValidateTokenResponse,
   },
