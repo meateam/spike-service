@@ -1,10 +1,11 @@
+import axios from 'axios';
 import * as grpc from  'grpc';
 import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
-import { SpikeService, ISpikeServer, SpikeClient } from '../proto/spike-service/generated/spike_grpc_pb';
+import { SpikeService, ISpikeServer } from '../proto/spike-service/generated/spike_grpc_pb';
 import { SpikeToken, GetSpikeTokenRequest, ValidateTokenResponse, ValidateTokenRequest, Client } from '../proto/spike-service/generated/spike_pb';
-import { clientId, clientSecret, redisHost, spikeURL, spikePublicKeyFullPath,
-     host, port, selfAudience, grantTypeDef } from './config';
+import { clientId, clientSecret, redisHost, spikeURL, localSpikePublicKeyFullPath,
+     host, port, selfAudience, grantTypeDef, spikePubKeyPath } from './config';
 const getTokenCreator = require('spike-get-token');
 
 class Server implements ISpikeServer {
@@ -13,7 +14,32 @@ class Server implements ISpikeServer {
 
     constructor() {
         this.tokenFunctionMap = new Map<string, any>();
-        this.spikeKey = fs.readFileSync(spikePublicKeyFullPath);
+        this.spikeKey = new Buffer('');
+        this.getSpikePubKey();
+    }
+
+    // Function for saving OSpike Public Key locally
+    private async getSpikePubKey() {
+        if (!fs.existsSync(localSpikePublicKeyFullPath)) {
+            try {
+                const response = await axios.get(spikePubKeyPath);
+                // Checking if the response is ok
+                if (response.status === 200) {
+                    // In 'axios' the body of the response is in 'data' property, the response should contain the raw file,
+                    // so we just need to save it.
+
+                    // Saving the public key locally
+                    fs.appendFileSync(localSpikePublicKeyFullPath, response.data);
+                    this.spikeKey = fs.readFileSync(localSpikePublicKeyFullPath);
+                    console.log(`spike pubkey successfully obtained , and saved to path ${localSpikePublicKeyFullPath}`);
+                } else {
+                    console.log(`an error occured! ${response.status}`);
+                }
+            } catch (err) {
+                console.log('getSpikePubKey caught error!');
+                console.log(err);
+            }
+        }
     }
 
     async getSpikeToken(call: grpc.ServerUnaryCall<GetSpikeTokenRequest>, callback: grpc.sendUnaryData<SpikeToken>) {
@@ -77,7 +103,7 @@ class Server implements ISpikeServer {
             ClientId,
             ClientSecret,
             spikeURL,
-            spikePublicKeyFullPath,
+            localSpikePublicKeyFullPath,
             tokenGrantType: grantType,
             tokenAudience: audience,
             tokenRedisKeyName: `${audience}:token`,
