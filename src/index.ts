@@ -103,7 +103,7 @@ class Server implements ISpikeServer {
             ClientId,
             ClientSecret,
             spikeURL,
-            localSpikePublicKeyFullPath,
+            spikePublicKeyFullPath: localSpikePublicKeyFullPath,
             tokenGrantType: grantType,
             tokenAudience: audience,
             tokenRedisKeyName: `${audience}:token`,
