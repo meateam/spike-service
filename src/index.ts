@@ -1,12 +1,26 @@
 import axios from 'axios';
-import * as grpc from  'grpc';
+import * as grpc from 'grpc';
 import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
+import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 import { SpikeService, ISpikeServer } from '../proto/spike-service/generated/spike_grpc_pb';
 import { SpikeToken, GetSpikeTokenRequest, ValidateTokenResponse, ValidateTokenRequest, Client } from '../proto/spike-service/generated/spike_pb';
-import { clientId, clientSecret, redisHost, spikeURL, localSpikePublicKeyFullPath,
-     host, port, selfAudience, grantTypeDef, spikePubKeyPath } from './config';
+import * as C from './config';
 const getTokenCreator = require('spike-get-token');
+
+const StatusesEnum = HealthCheckResponse.ServingStatus;
+
+const healthCheckStatusMap = {
+    '': StatusesEnum.UNKNOWN,
+    serviceName: StatusesEnum.UNKNOWN,
+};
+const serviceNames: string[] = ['', 'spike.spikeService'];
+
+// Boolean describing if spike public key was obtained.
+let isSPBK: boolean = true;
+
+// Boolean describing if spike public key was obtained.
+let isRedisOK: boolean = true;
 
 class Server implements ISpikeServer {
     private tokenFunctionMap: Map<string, any>;
@@ -20,54 +34,66 @@ class Server implements ISpikeServer {
 
     // Function for saving OSpike Public Key locally
     private async getSpikePubKey() {
-        if (!fs.existsSync(localSpikePublicKeyFullPath)) {
+        if (!fs.existsSync(C.localSpikePublicKeyFullPath)) {
             try {
-                const response = await axios.get(spikePubKeyPath);
+                const response = await axios.get(C.spikePubKeyPath);
                 // Checking if the response is ok
                 if (response.status === 200) {
                     // In 'axios' the body of the response is in 'data' property, the response should contain the raw file,
                     // so we just need to save it.
 
                     // Saving the public key locally
-                    fs.appendFileSync(localSpikePublicKeyFullPath, response.data);
-                    this.spikeKey = fs.readFileSync(localSpikePublicKeyFullPath);
-                    console.log(`spike pubkey successfully obtained , and saved to path ${localSpikePublicKeyFullPath}`);
+                    fs.appendFileSync(C.localSpikePublicKeyFullPath, response.data);
+                    console.log(`spike pubkey successfully obtained , and saved to path ${C.localSpikePublicKeyFullPath}`);
+                    isSPBK = true;
                 } else {
                     console.log(`an error occured! ${response.status}`);
+                    isSPBK = false;
                 }
             } catch (err) {
                 console.log('getSpikePubKey caught error!');
                 console.log(err);
+                isSPBK = false;
             }
+        } else {
+            this.spikeKey = fs.readFileSync(C.localSpikePublicKeyFullPath);
+            console.log(`spike pubkey found in local files in: ${C.localSpikePublicKeyFullPath}`);
+            isSPBK = true;
         }
     }
 
     async getSpikeToken(call: grpc.ServerUnaryCall<GetSpikeTokenRequest>, callback: grpc.sendUnaryData<SpikeToken>) {
-        const audience = call.request.getAudience();
-        const grantType = call.request.getGrantType() || grantTypeDef;
-        const client = call.request.getClient();
-        console.log(`Getting token for audience = ${audience}, grant_type = ${grantType}`);
-        let getToken = this.tokenFunctionMap.get(audience);
-        if (!this.tokenFunctionMap.get(audience)) {
-            const options = this.buildOptions(audience, grantType, client);
-            console.log(`Creating getToken function for audience = ${options.tokenAudience}`);
-            getToken = getTokenCreator(options);
-            this.tokenFunctionMap.set(audience, getTokenCreator(options));
-        }
-        const token = await getToken();
-        const spikeToken = new SpikeToken();
-        spikeToken.setToken(token);
+        try {
+            const audience = call.request.getAudience();
+            const grantType = call.request.getGrantType() || C.grantTypeDef;
+            const client = call.request.getClient();
+            console.log(`Getting token for audience = ${audience}, grant_type = ${grantType}`);
+            let getToken = this.tokenFunctionMap.get(audience);
+            if (!this.tokenFunctionMap.get(audience)) {
+                const options = this.buildOptions(audience, grantType, client);
+                console.log(`Creating getToken function for audience = ${options.tokenAudience}`);
+                getToken = getTokenCreator(options);
+                this.tokenFunctionMap.set(audience, getTokenCreator(options));
+            }
+            const token = await getToken();
+            const spikeToken = new SpikeToken();
+            spikeToken.setToken(token);
+            callback(null, spikeToken);
+            console.log(`Got the token: ${token}`);
+            return token;
 
-        callback(null, spikeToken);
-        console.log(`Got the token: ${token}`);
-        return token;
+        } catch (err) {
+            isRedisOK = false;
+            console.log('an error occurred while getting spike token:');
+            console.log(err);
+        }
     }
 
     validateToken(call: grpc.ServerUnaryCall<ValidateTokenRequest>, callback: grpc.sendUnaryData<ValidateTokenResponse>) {
         const token = call.request.getToken();
         console.log(`Checking token = ${token}`);
 
-        const audience = call.request.getAudience() || selfAudience;
+        const audience = call.request.getAudience() || C.selfAudience;
         jwt.verify(token, this.spikeKey, { audience }, (err, decoded: any) => {
             const response = new ValidateTokenResponse();
             if (err) {
@@ -95,15 +121,15 @@ class Server implements ISpikeServer {
 
     private buildOptions(audience: string, grantType: string, reqClient: Client | undefined) {
 
-        const ClientId =  reqClient?.getId() || clientId;
-        const ClientSecret = reqClient?.getSecret() || clientSecret;
+        const ClientId = reqClient?.getId() || C.clientId;
+        const ClientSecret = reqClient?.getSecret() || C.clientSecret;
 
         return {
-            redisHost,
             ClientId,
             ClientSecret,
-            spikeURL,
-            localSpikePublicKeyFullPath,
+            redisHost: C.redisHost,
+            spikeURL: C.spikeURL,
+            spikePublicKeyFullPath: C.localSpikePublicKeyFullPath,
             tokenGrantType: grantType,
             tokenAudience: audience,
             tokenRedisKeyName: `${audience}:token`,
@@ -113,13 +139,33 @@ class Server implements ISpikeServer {
 
 }
 
+export const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
+
 function startServer() {
     const server = new grpc.Server();
+    const spikeServer = new Server();
 
-    server.addService(SpikeService, new Server());
-    server.bind(`${host}:${port}`, grpc.ServerCredentials.createInsecure());
+    // Register SpikeService
+    server.addService(SpikeService, spikeServer);
+
+    // Register the health service
+    server.addService(HealthService, grpcHealthCheck);
+
+    setInterval(function () {
+        const currStatus = (isSPBK && isRedisOK) ? StatusesEnum.SERVING : StatusesEnum.NOT_SERVING;
+        setHealthStatus(spikeServer, currStatus);
+    }, 1000);
+
+    // setHealthStatus(spikeServer, HealthCheckResponse.ServingStatus.SERVING);
+    server.bind(`${C.host}:${C.port}`, grpc.ServerCredentials.createInsecure());
     server.start();
-    console.log(`Server is listening on port ${port}`);
+    console.log(`Server is listening on port ${C.port}`);
+}
+
+function setHealthStatus(server: Server, status: number): void {
+    for (let i = 0; i < serviceNames.length; i++) {
+        grpcHealthCheck.setStatus(serviceNames[i], status);
+    }
 }
 
 startServer();
