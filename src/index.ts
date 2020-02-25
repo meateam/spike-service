@@ -151,10 +151,12 @@ function startServer() {
     // Register the health service
     server.addService(HealthService, grpcHealthCheck);
 
-    setInterval(function () {
-        const currStatus = (isSPBK && isRedisOK) ? StatusesEnum.SERVING : StatusesEnum.NOT_SERVING;
-        setHealthStatus(spikeServer, currStatus);
-    }, 1000);
+    setInterval(
+        function () {
+            const currStatus = (isSPBK && isRedisOK) ? StatusesEnum.SERVING : StatusesEnum.NOT_SERVING;
+            setHealthStatus(spikeServer, currStatus);
+        },
+        1000);
 
     // setHealthStatus(spikeServer, HealthCheckResponse.ServingStatus.SERVING);
     server.bind(`${C.host}:${C.port}`, grpc.ServerCredentials.createInsecure());
