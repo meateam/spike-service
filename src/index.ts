@@ -55,11 +55,11 @@ class Server implements ISpikeServer {
                 console.log(err);
                 isSPBK = false;
             }
-        } else {
-            this.spikeKey = fs.readFileSync(C.localSpikePublicKeyFullPath);
-            console.log(`spike pubkey found in local files in: ${C.localSpikePublicKeyFullPath}`);
-            isSPBK = true;
         }
+        this.spikeKey = fs.readFileSync(C.localSpikePublicKeyFullPath);
+        console.log(`spike pubkey found in local files in: ${C.localSpikePublicKeyFullPath}`);
+        console.log(this.spikeKey);
+        isSPBK = true;
     }
 
     async getSpikeToken(call: grpc.ServerUnaryCall<GetSpikeTokenRequest>, callback: grpc.sendUnaryData<SpikeToken>) {
