@@ -5,6 +5,7 @@ package spike;
 service Spike {
     rpc GetSpikeToken(GetSpikeTokenRequest) returns (SpikeToken) {}
     rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {}
+    rpc ValidateAuthCodeToken(ValidateAuthCodeTokenRequest) returns (ValidateAuthCodeTokenResponse) {}
 }
 
 message Client {
@@ -33,4 +34,25 @@ message ValidateTokenResponse {
     bool valid = 1;
     repeated string scopes = 2;
     string message = 3;
+    string alias = 4;
+    User user = 5;
+}
+
+message ValidateAuthCodeTokenRequest {
+    string token = 1;
+    string audience = 2; //optional
+}
+
+message ValidateAuthCodeTokenResponse {
+    bool valid = 1;
+    repeated string scopes = 2;
+    string message = 3;
+    string alias = 4;
+    User user = 5;
+}
+
+message User {
+    string id = 1;
+    string firstName = 2;
+    string lastName = 3;
 }

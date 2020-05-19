@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "compile-proto": "./generate-proto.sh spike-service",
     "start": "npm run build && node ./dist/index.js",
     "build": "tsc",
     "serve": "node ./dist/index.js",
@@ -16,7 +17,7 @@
     "@types/jsonwebtoken": "^8.3.5",
     "@types/node": "^12.12.17",
     "@types/passport-jwt": "^3.0.3",
-    "grpc_tools_node_protoc_ts": "^2.5.8",
+    "grpc_tools_node_protoc_ts": "^2.5.11",
     "tslint": "^5.20.1",
     "tslint-config-airbnb": "^5.11.2"
   },
@@ -30,6 +31,7 @@
     "jsonwebtoken": "^8.5.1",
     "redis": "^2.8.0",
     "spike-get-token": "^1.1.1",
+    "request": "^2.88.2",
     "typescript": "^3.7.3"
   }
 }

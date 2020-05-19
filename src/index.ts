@@ -4,8 +4,18 @@ import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 import { SpikeService, ISpikeServer } from '../proto/spike-service/generated/spike_grpc_pb';
-import { SpikeToken, GetSpikeTokenRequest, ValidateTokenResponse, ValidateTokenRequest, Client } from '../proto/spike-service/generated/spike_pb';
 import * as C from './config';
+import {
+    SpikeToken,
+    User,
+    GetSpikeTokenRequest,
+    ValidateTokenResponse,
+    ValidateTokenRequest,
+    ValidateAuthCodeTokenRequest,
+    ValidateAuthCodeTokenResponse,
+    Client,
+} from '../proto/spike-service/generated/spike_pb';
+import { ClientId, ClientSecret, redisHost, spikeURL, spikePublicKeyFullPath, host, port, selfAudience } from './config';
 const getTokenCreator = require('spike-get-token');
 
 const StatusesEnum = HealthCheckResponse.ServingStatus;
@@ -116,7 +126,40 @@ class Server implements ISpikeServer {
             };
             return callback(e, null);
         });
+    }
 
+    validateAuthCodeToken(
+        call: grpc.ServerUnaryCall<ValidateAuthCodeTokenRequest>,
+        callback: grpc.sendUnaryData<ValidateAuthCodeTokenResponse>) {
+
+        const token = call.request.getToken();
+        const audience = call.request.getAudience() || selfAudience;
+        console.log(`Checking auth-code token = ${token}`);
+
+        jwt.verify(token, this.spikeKey, { audience }, (err, decoded: any) => {
+            const response = new ValidateAuthCodeTokenResponse();
+            if (err) {
+                console.log(err);
+                response.setValid(false);
+                response.setMessage(err.message);
+                return callback(null, response);
+            }
+            if (decoded.scopes) {
+                console.log(`The scopes are: ${decoded.scope}`);
+                response.setValid(true);
+                response.setScopesList(decoded.scope);
+            }
+            if (decoded.user) {
+                const user = new User();
+                user.setId = decoded.user.id;
+                user.setFirstname = decoded.user.firstName;
+                user.setLastname = decoded.user.lastName || ' ';
+
+                response.setUser(user);
+            }
+            response.setAlias(decoded.client_id);
+            return callback(null, response);
+        });
     }
 
     private buildOptions(audience: string, grantType: string, reqClient: Client | undefined) {
