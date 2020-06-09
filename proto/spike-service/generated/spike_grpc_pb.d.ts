@@ -21,12 +21,12 @@ interface ISpikeService_IGetSpikeToken extends grpc.MethodDefinition<spike_pb.Ge
     responseSerialize: grpc.serialize<spike_pb.SpikeToken>;
     responseDeserialize: grpc.deserialize<spike_pb.SpikeToken>;
 }
-interface ISpikeService_IValidateToken extends grpc.MethodDefinition<spike_pb.ValidateTokenResquest, spike_pb.ValidateTokenResponse> {
+interface ISpikeService_IValidateToken extends grpc.MethodDefinition<spike_pb.ValidateTokenRequest, spike_pb.ValidateTokenResponse> {
     path: string; // "/spike.Spike/ValidateToken"
     requestStream: boolean; // false
     responseStream: boolean; // false
-    requestSerialize: grpc.serialize<spike_pb.ValidateTokenResquest>;
-    requestDeserialize: grpc.deserialize<spike_pb.ValidateTokenResquest>;
+    requestSerialize: grpc.serialize<spike_pb.ValidateTokenRequest>;
+    requestDeserialize: grpc.deserialize<spike_pb.ValidateTokenRequest>;
     responseSerialize: grpc.serialize<spike_pb.ValidateTokenResponse>;
     responseDeserialize: grpc.deserialize<spike_pb.ValidateTokenResponse>;
 }
@@ -35,16 +35,16 @@ export const SpikeService: ISpikeService;
 
 export interface ISpikeServer {
     getSpikeToken: grpc.handleUnaryCall<spike_pb.GetSpikeTokenRequest, spike_pb.SpikeToken>;
-    validateToken: grpc.handleUnaryCall<spike_pb.ValidateTokenResquest, spike_pb.ValidateTokenResponse>;
+    validateToken: grpc.handleUnaryCall<spike_pb.ValidateTokenRequest, spike_pb.ValidateTokenResponse>;
 }
 
 export interface ISpikeClient {
     getSpikeToken(request: spike_pb.GetSpikeTokenRequest, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
     getSpikeToken(request: spike_pb.GetSpikeTokenRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
     getSpikeToken(request: spike_pb.GetSpikeTokenRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
-    validateToken(request: spike_pb.ValidateTokenResquest, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
-    validateToken(request: spike_pb.ValidateTokenResquest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
-    validateToken(request: spike_pb.ValidateTokenResquest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
+    validateToken(request: spike_pb.ValidateTokenRequest, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
+    validateToken(request: spike_pb.ValidateTokenRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
+    validateToken(request: spike_pb.ValidateTokenRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
 }
 
 export class SpikeClient extends grpc.Client implements ISpikeClient {
@@ -52,7 +52,7 @@ export class SpikeClient extends grpc.Client implements ISpikeClient {
     public getSpikeToken(request: spike_pb.GetSpikeTokenRequest, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
     public getSpikeToken(request: spike_pb.GetSpikeTokenRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
     public getSpikeToken(request: spike_pb.GetSpikeTokenRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: spike_pb.SpikeToken) => void): grpc.ClientUnaryCall;
-    public validateToken(request: spike_pb.ValidateTokenResquest, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
-    public validateToken(request: spike_pb.ValidateTokenResquest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
-    public validateToken(request: spike_pb.ValidateTokenResquest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
+    public validateToken(request: spike_pb.ValidateTokenRequest, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
+    public validateToken(request: spike_pb.ValidateTokenRequest, metadata: grpc.Metadata, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
+    public validateToken(request: spike_pb.ValidateTokenRequest, metadata: grpc.Metadata, options: Partial<grpc.CallOptions>, callback: (error: grpc.ServiceError | null, response: spike_pb.ValidateTokenResponse) => void): grpc.ClientUnaryCall;
 }

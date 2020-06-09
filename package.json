@@ -6,9 +6,7 @@
   "scripts": {
     "start": "npm run build && node ./dist/index.js",
     "build": "tsc",
-    "test": "npm run tslint",
     "serve": "node ./dist/index.js",
-    "test": "npm run tslint",
     "tslint": "tslint -c tslint.json -p tsconfig.json"
   },
   "author": "Yonatan Tal",
@@ -28,9 +26,10 @@
     "google-protobuf": "^3.11.1",
     "grpc": "^1.24.2",
     "grpc-tools": "^1.8.0",
+    "grpc-ts-health-check": "^1.0.14",
     "jsonwebtoken": "^8.5.1",
     "redis": "^2.8.0",
-    "spike-get-token": "^1.0.1",
+    "spike-get-token": "^1.1.1",
     "typescript": "^3.7.3"
   }
 }

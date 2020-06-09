@@ -4,7 +4,7 @@ package spike;
 
 service Spike {
     rpc GetSpikeToken(GetSpikeTokenRequest) returns (SpikeToken) {}
-    rpc ValidateToken(ValidateTokenResquest) returns (ValidateTokenResponse) {}
+    rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse) {}
 }
 
 message Client {
@@ -24,7 +24,7 @@ message SpikeToken {
     string token = 1;
 }
 
-message ValidateTokenResquest {
+message ValidateTokenRequest {
     string token = 1;
     string audience = 2; // optional
 }
