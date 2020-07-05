@@ -71,6 +71,7 @@ class Server implements ISpikeServer {
         isSPBK = true;
     }
 
+    // getSpikeToken retruns a JWT token from Spike by a givven audience, grantType and client.
     async getSpikeToken(call: grpc.ServerUnaryCall<GetSpikeTokenRequest>, callback: grpc.sendUnaryData<SpikeToken>) {
         try {
             const audience = call.request.getAudience();
@@ -89,6 +90,7 @@ class Server implements ISpikeServer {
             spikeToken.setToken(token);
             callback(null, spikeToken);
             console.log(`Got the token: ${token}`);
+            isRedisOK = true;
             return token;
 
         } catch (err) {
@@ -98,6 +100,7 @@ class Server implements ISpikeServer {
         }
     }
 
+    // validateToken validates a givven client-credentials token.
     validateToken(call: grpc.ServerUnaryCall<ValidateTokenRequest>, callback: grpc.sendUnaryData<ValidateTokenResponse>) {
         const token = call.request.getToken();
         console.log(`Checking token = ${token}`);
@@ -127,6 +130,8 @@ class Server implements ISpikeServer {
         });
     }
 
+    // validateAuthCodeToken validates a givven authorization-code token.
+    // Returns the scope-list and the subject (user).
     validateAuthCodeToken(
         call: grpc.ServerUnaryCall<ValidateAuthCodeTokenRequest>,
         callback: grpc.sendUnaryData<ValidateAuthCodeTokenResponse>) {
