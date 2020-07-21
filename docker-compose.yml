@@ -5,18 +5,8 @@ services:
     image: spike-service:latest
     ports:
       - "8080:8080"
-    environment:
-      AUDIENCE: ${KARTOFFEL_AUDIENCE}
-      GRANT_TYPE: ${GRANT_TYPE}
-      SPIKE_CLIENT_ID: ${SPIKE_CLIENT_ID}
-      SPIKE_CLIENT_SECRET: ${SPIKE_CLIENT_SECRET}
-      REDIS_URL: ${REDIS_URL}
-      SPIKE_TOKEN_URL: ${SPIKE_TOKEN_URL}
-      SPIKE_PUBKEY_PATH: ${SPIKE_PUBKEY_PATH}
-      SPIKE_PUBLIC_KEY_FULL_PATH: ${SPIKE_PUBLIC_KEY_FULL_PATH}
-      NODE_TLS_REJECT_UNAUTHORIZED: ${NODE_TLS_REJECT_UNAUTHORIZED}
-      SS_PROT: ${PORT}
-      SS_HOST: ${HOST}
+    env_file:
+      - ../kdrive.env
     depends_on:
       - redis
   redis:
