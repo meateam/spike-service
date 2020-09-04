@@ -26,7 +26,7 @@
     "google-protobuf": "^3.11.1",
     "grpc": "^1.24.2",
     "grpc-tools": "^1.8.0",
-    "grpc-ts-health-check": "^1.0.14",
+    "grpc-ts-health-check": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
     "redis": "^2.8.0",
     "spike-get-token": "^1.1.1",
