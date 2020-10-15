@@ -1,9 +1,36 @@
 //spike-service
 pipeline {
-  agent any
+  agent {    
+       kubernetes {
+       defaultContainer 'dind-slave'  
+       yaml """
+      apiVersion: v1 
+      kind: Pod 
+      metadata: 
+          name: k8s-worker
+      spec: 
+          containers: 
+            - name: dind-slave
+              image: docker:1.12.6-dind 
+              resources: 
+                  requests: 
+                      cpu: 20m 
+                      memory: 512Mi 
+              securityContext: 
+                  privileged: true 
+              volumeMounts: 
+                - name: docker-graph-storage 
+                  mountPath: /var/lib/docker 
+          volumes: 
+            - name: docker-graph-storage 
+              emptyDir: {}
+ """
+    }
+  }   
     stages {
-       stage('get_commit_msg') {
-            steps {
+        stage('get_commit_msg') {
+          steps {
+            container('jnlp'){ 
               script {
                   env.GIT_COMMIT_MSG = sh (script: 'git log -1 --pretty=%B ${GIT_COMMIT}', returnStdout: true).trim()
                    env.GIT_SHORT_COMMIT = sh(returnStdout: true, script: "git log -n 1 --pretty=format:'%h'").trim()
@@ -20,8 +47,9 @@ pipeline {
                   //  creating variable that contain the JOB_WITHOUT_BRANCH variable without the last 3 characters 
                   env.JOB_FOR_URL = sh([script: "echo ${JOB_WITHOUT_BRANCH}|rev | cut -c 4- | rev", returnStdout: true]).trim()  
                   echo "${env.JOB_FOR_URL}"  
-                }
+              }
             }
+          } 
         }
         stage('build dockerfile of tests') {
             steps {
