@@ -121,6 +121,15 @@ export class ValidateTokenResponse extends jspb.Message {
     getMessage(): string;
     setMessage(value: string): void;
 
+    getAlias(): string;
+    setAlias(value: string): void;
+
+
+    hasUser(): boolean;
+    clearUser(): void;
+    getUser(): User | undefined;
+    setUser(value?: User): void;
+
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ValidateTokenResponse.AsObject;
@@ -137,5 +146,103 @@ export namespace ValidateTokenResponse {
         valid: boolean,
         scopesList: Array<string>,
         message: string,
+        alias: string,
+        user?: User.AsObject,
+    }
+}
+
+export class ValidateAuthCodeTokenRequest extends jspb.Message { 
+    getToken(): string;
+    setToken(value: string): void;
+
+    getAudience(): string;
+    setAudience(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ValidateAuthCodeTokenRequest.AsObject;
+    static toObject(includeInstance: boolean, msg: ValidateAuthCodeTokenRequest): ValidateAuthCodeTokenRequest.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ValidateAuthCodeTokenRequest, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ValidateAuthCodeTokenRequest;
+    static deserializeBinaryFromReader(message: ValidateAuthCodeTokenRequest, reader: jspb.BinaryReader): ValidateAuthCodeTokenRequest;
+}
+
+export namespace ValidateAuthCodeTokenRequest {
+    export type AsObject = {
+        token: string,
+        audience: string,
+    }
+}
+
+export class ValidateAuthCodeTokenResponse extends jspb.Message { 
+    getValid(): boolean;
+    setValid(value: boolean): void;
+
+    clearScopesList(): void;
+    getScopesList(): Array<string>;
+    setScopesList(value: Array<string>): void;
+    addScopes(value: string, index?: number): string;
+
+    getMessage(): string;
+    setMessage(value: string): void;
+
+    getAlias(): string;
+    setAlias(value: string): void;
+
+
+    hasUser(): boolean;
+    clearUser(): void;
+    getUser(): User | undefined;
+    setUser(value?: User): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ValidateAuthCodeTokenResponse.AsObject;
+    static toObject(includeInstance: boolean, msg: ValidateAuthCodeTokenResponse): ValidateAuthCodeTokenResponse.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ValidateAuthCodeTokenResponse, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ValidateAuthCodeTokenResponse;
+    static deserializeBinaryFromReader(message: ValidateAuthCodeTokenResponse, reader: jspb.BinaryReader): ValidateAuthCodeTokenResponse;
+}
+
+export namespace ValidateAuthCodeTokenResponse {
+    export type AsObject = {
+        valid: boolean,
+        scopesList: Array<string>,
+        message: string,
+        alias: string,
+        user?: User.AsObject,
+    }
+}
+
+export class User extends jspb.Message { 
+    getId(): string;
+    setId(value: string): void;
+
+    getFirstname(): string;
+    setFirstname(value: string): void;
+
+    getLastname(): string;
+    setLastname(value: string): void;
+
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): User.AsObject;
+    static toObject(includeInstance: boolean, msg: User): User.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: User, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): User;
+    static deserializeBinaryFromReader(message: User, reader: jspb.BinaryReader): User;
+}
+
+export namespace User {
+    export type AsObject = {
+        id: string,
+        firstname: string,
+        lastname: string,
     }
 }

@@ -4,8 +4,17 @@ import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
 import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
 import { SpikeService, ISpikeServer } from '../proto/spike-service/generated/spike_grpc_pb';
-import { SpikeToken, GetSpikeTokenRequest, ValidateTokenResponse, ValidateTokenRequest, Client } from '../proto/spike-service/generated/spike_pb';
 import * as C from './config';
+import {
+    SpikeToken,
+    User,
+    GetSpikeTokenRequest,
+    ValidateTokenResponse,
+    ValidateTokenRequest,
+    ValidateAuthCodeTokenRequest,
+    ValidateAuthCodeTokenResponse,
+    Client,
+} from '../proto/spike-service/generated/spike_pb';
 const getTokenCreator = require('spike-get-token');
 
 const StatusesEnum = HealthCheckResponse.ServingStatus;
@@ -62,6 +71,7 @@ class Server implements ISpikeServer {
         isSPBK = true;
     }
 
+    // getSpikeToken retruns a JWT token from Spike by a givven audience, grantType and client.
     async getSpikeToken(call: grpc.ServerUnaryCall<GetSpikeTokenRequest>, callback: grpc.sendUnaryData<SpikeToken>) {
         try {
             const audience = call.request.getAudience();
@@ -80,6 +90,7 @@ class Server implements ISpikeServer {
             spikeToken.setToken(token);
             callback(null, spikeToken);
             console.log(`Got the token: ${token}`);
+            isRedisOK = true;
             return token;
 
         } catch (err) {
@@ -89,6 +100,7 @@ class Server implements ISpikeServer {
         }
     }
 
+    // validateToken validates a givven client-credentials token.
     validateToken(call: grpc.ServerUnaryCall<ValidateTokenRequest>, callback: grpc.sendUnaryData<ValidateTokenResponse>) {
         const token = call.request.getToken();
         console.log(`Checking token = ${token}`);
@@ -116,7 +128,45 @@ class Server implements ISpikeServer {
             };
             return callback(e, null);
         });
+    }
 
+    // validateAuthCodeToken validates a givven authorization-code token.
+    // Returns the scope-list and the subject (user).
+    validateAuthCodeToken(
+        call: grpc.ServerUnaryCall<ValidateAuthCodeTokenRequest>,
+        callback: grpc.sendUnaryData<ValidateAuthCodeTokenResponse>) {
+
+        const token = call.request.getToken();
+        const audience = call.request.getAudience() || C.selfAudience;
+        console.log(`Checking auth-code token = ${token}`);
+
+        jwt.verify(token, this.spikeKey, { audience }, (err, decoded: any) => {
+            const response = new ValidateAuthCodeTokenResponse();
+            if (err) {
+                console.log(`Error + ${err}`);
+                response.setValid(false);
+                response.setMessage(err.message);
+                return callback(null, response);
+            }
+            if (decoded.scope) {
+                console.log(`The scopes are: ${decoded.scope}`);
+                response.setValid(true);
+                response.setScopesList(decoded.scope);
+            }
+            if (decoded.user) {
+                const user = new User();
+                const id = decoded.user.genesisId;
+                const firstName = decoded.user.name.firstName || ' ';
+                const lastName = decoded.user.name.lastName || ' ';
+                user.setId(id);
+                user.setFirstname(firstName);
+                user.setLastname(lastName);
+
+                response.setUser(user);
+            }
+            response.setAlias(decoded.clientId);
+            return callback(null, response);
+        });
     }
 
     private buildOptions(audience: string, grantType: string, reqClient: Client | undefined) {
