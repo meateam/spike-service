@@ -16,4 +16,4 @@ COPY . $HOME/app/
 
 EXPOSE 3000
 
-CMD ["npm", "run_tests"]
+CMD ["npm", "run", "run_tests"]
