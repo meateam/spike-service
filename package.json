@@ -8,7 +8,8 @@
     "start": "npm run build && node ./dist/index.js",
     "build": "tsc",
     "serve": "node ./dist/index.js",
-    "tslint": "tslint -c tslint.json -p tsconfig.json"
+    "tslint": "tslint -c tslint.json -p tsconfig.json",
+    "run_tests": "npm run tslint"
   },
   "author": "Yonatan Tal",
   "license": "ISC",
