@@ -19,6 +19,7 @@ const getTokenCreator = require('spike-get-token');
 
 const StatusesEnum = HealthCheckResponse.ServingStatus;
 
+// tslint:disable-next-line: prefer-const
 let healthCheckStatusMap: any = {
     '': StatusesEnum.UNKNOWN,
     'spike.spikeService': StatusesEnum.UNKNOWN,
@@ -189,7 +190,8 @@ class Server implements ISpikeServer {
 }
 
 export const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
-let requests = new Array<HealthCheckRequest>(Object.keys(healthCheckStatusMap).length);
+// tslint:disable-next-line: prefer-const
+let requests : HealthCheckRequest[] = [];
 
 function startServer() {
     // Create the server
@@ -208,15 +210,15 @@ function startServer() {
     // Set services
     for (const service in healthCheckStatusMap) {
         const request = new HealthCheckRequest();
-        request.setService(service)
-        
+        request.setService(service);
+
         requests.push(request);
     }
 
     setInterval(function () {
-            const currStatus = (isSPBK && isRedisOK) ? StatusesEnum.SERVING : StatusesEnum.NOT_SERVING;
-            requests.forEach(request => { setHealthStatus(request, healthClient, currStatus) });
-    },1000);
+        const currStatus = (isSPBK && isRedisOK) ? StatusesEnum.SERVING : StatusesEnum.NOT_SERVING;
+        requests.forEach((request) => { setHealthStatus(request, healthClient, currStatus); });
+    },          1000);
 
     server.bind(`${C.host}:${C.port}`, grpc.ServerCredentials.createInsecure());
     server.start();
@@ -232,7 +234,7 @@ function setHealthStatus(request: HealthCheckRequest, healthClient: HealthClient
         if (error) {
             console.log(`${serviceName} Service: Health Check Failed`);
             console.log(error);
-        } 
+        }
     });
 }
 
