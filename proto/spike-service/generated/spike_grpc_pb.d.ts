@@ -14,27 +14,27 @@ interface ISpikeService extends grpc.ServiceDefinition<grpc.UntypedServiceImplem
 }
 
 interface ISpikeService_IGetSpikeToken extends grpc.MethodDefinition<spike_pb.GetSpikeTokenRequest, spike_pb.SpikeToken> {
-    path: string; // "/spike.Spike/GetSpikeToken"
-    requestStream: boolean; // false
-    responseStream: boolean; // false
+    path: "/spike.Spike/GetSpikeToken";
+    requestStream: false;
+    responseStream: false;
     requestSerialize: grpc.serialize<spike_pb.GetSpikeTokenRequest>;
     requestDeserialize: grpc.deserialize<spike_pb.GetSpikeTokenRequest>;
     responseSerialize: grpc.serialize<spike_pb.SpikeToken>;
     responseDeserialize: grpc.deserialize<spike_pb.SpikeToken>;
 }
 interface ISpikeService_IValidateToken extends grpc.MethodDefinition<spike_pb.ValidateTokenRequest, spike_pb.ValidateTokenResponse> {
-    path: string; // "/spike.Spike/ValidateToken"
-    requestStream: boolean; // false
-    responseStream: boolean; // false
+    path: "/spike.Spike/ValidateToken";
+    requestStream: false;
+    responseStream: false;
     requestSerialize: grpc.serialize<spike_pb.ValidateTokenRequest>;
     requestDeserialize: grpc.deserialize<spike_pb.ValidateTokenRequest>;
     responseSerialize: grpc.serialize<spike_pb.ValidateTokenResponse>;
     responseDeserialize: grpc.deserialize<spike_pb.ValidateTokenResponse>;
 }
 interface ISpikeService_IValidateAuthCodeToken extends grpc.MethodDefinition<spike_pb.ValidateAuthCodeTokenRequest, spike_pb.ValidateAuthCodeTokenResponse> {
-    path: string; // "/spike.Spike/ValidateAuthCodeToken"
-    requestStream: boolean; // false
-    responseStream: boolean; // false
+    path: "/spike.Spike/ValidateAuthCodeToken";
+    requestStream: false;
+    responseStream: false;
     requestSerialize: grpc.serialize<spike_pb.ValidateAuthCodeTokenRequest>;
     requestDeserialize: grpc.deserialize<spike_pb.ValidateAuthCodeTokenRequest>;
     responseSerialize: grpc.serialize<spike_pb.ValidateAuthCodeTokenResponse>;

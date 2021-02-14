@@ -8,10 +8,10 @@ import * as jspb from "google-protobuf";
 
 export class Client extends jspb.Message { 
     getId(): string;
-    setId(value: string): void;
+    setId(value: string): Client;
 
     getSecret(): string;
-    setSecret(value: string): void;
+    setSecret(value: string): Client;
 
 
     serializeBinary(): Uint8Array;
@@ -33,16 +33,16 @@ export namespace Client {
 
 export class GetSpikeTokenRequest extends jspb.Message { 
     getGrantType(): string;
-    setGrantType(value: string): void;
+    setGrantType(value: string): GetSpikeTokenRequest;
 
     getAudience(): string;
-    setAudience(value: string): void;
+    setAudience(value: string): GetSpikeTokenRequest;
 
 
     hasClient(): boolean;
     clearClient(): void;
     getClient(): Client | undefined;
-    setClient(value?: Client): void;
+    setClient(value?: Client): GetSpikeTokenRequest;
 
 
     serializeBinary(): Uint8Array;
@@ -65,7 +65,7 @@ export namespace GetSpikeTokenRequest {
 
 export class SpikeToken extends jspb.Message { 
     getToken(): string;
-    setToken(value: string): void;
+    setToken(value: string): SpikeToken;
 
 
     serializeBinary(): Uint8Array;
@@ -86,10 +86,10 @@ export namespace SpikeToken {
 
 export class ValidateTokenRequest extends jspb.Message { 
     getToken(): string;
-    setToken(value: string): void;
+    setToken(value: string): ValidateTokenRequest;
 
     getAudience(): string;
-    setAudience(value: string): void;
+    setAudience(value: string): ValidateTokenRequest;
 
 
     serializeBinary(): Uint8Array;
@@ -111,24 +111,24 @@ export namespace ValidateTokenRequest {
 
 export class ValidateTokenResponse extends jspb.Message { 
     getValid(): boolean;
-    setValid(value: boolean): void;
+    setValid(value: boolean): ValidateTokenResponse;
 
     clearScopesList(): void;
     getScopesList(): Array<string>;
-    setScopesList(value: Array<string>): void;
+    setScopesList(value: Array<string>): ValidateTokenResponse;
     addScopes(value: string, index?: number): string;
 
     getMessage(): string;
-    setMessage(value: string): void;
+    setMessage(value: string): ValidateTokenResponse;
 
     getAlias(): string;
-    setAlias(value: string): void;
+    setAlias(value: string): ValidateTokenResponse;
 
 
     hasUser(): boolean;
     clearUser(): void;
     getUser(): User | undefined;
-    setUser(value?: User): void;
+    setUser(value?: User): ValidateTokenResponse;
 
 
     serializeBinary(): Uint8Array;
@@ -153,10 +153,10 @@ export namespace ValidateTokenResponse {
 
 export class ValidateAuthCodeTokenRequest extends jspb.Message { 
     getToken(): string;
-    setToken(value: string): void;
+    setToken(value: string): ValidateAuthCodeTokenRequest;
 
     getAudience(): string;
-    setAudience(value: string): void;
+    setAudience(value: string): ValidateAuthCodeTokenRequest;
 
 
     serializeBinary(): Uint8Array;
@@ -178,24 +178,24 @@ export namespace ValidateAuthCodeTokenRequest {
 
 export class ValidateAuthCodeTokenResponse extends jspb.Message { 
     getValid(): boolean;
-    setValid(value: boolean): void;
+    setValid(value: boolean): ValidateAuthCodeTokenResponse;
 
     clearScopesList(): void;
     getScopesList(): Array<string>;
-    setScopesList(value: Array<string>): void;
+    setScopesList(value: Array<string>): ValidateAuthCodeTokenResponse;
     addScopes(value: string, index?: number): string;
 
     getMessage(): string;
-    setMessage(value: string): void;
+    setMessage(value: string): ValidateAuthCodeTokenResponse;
 
     getAlias(): string;
-    setAlias(value: string): void;
+    setAlias(value: string): ValidateAuthCodeTokenResponse;
 
 
     hasUser(): boolean;
     clearUser(): void;
     getUser(): User | undefined;
-    setUser(value?: User): void;
+    setUser(value?: User): ValidateAuthCodeTokenResponse;
 
 
     serializeBinary(): Uint8Array;
@@ -220,13 +220,13 @@ export namespace ValidateAuthCodeTokenResponse {
 
 export class User extends jspb.Message { 
     getId(): string;
-    setId(value: string): void;
+    setId(value: string): User;
 
     getFirstname(): string;
-    setFirstname(value: string): void;
+    setFirstname(value: string): User;
 
     getLastname(): string;
-    setLastname(value: string): void;
+    setLastname(value: string): User;
 
 
     serializeBinary(): Uint8Array;
