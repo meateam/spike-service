@@ -31,7 +31,7 @@
     "grpc-tools": "^1.8.0",
     "grpc-ts-health-check": "^1.0.14",
     "jsonwebtoken": "^8.5.1",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "spike-get-token": "^1.1.1",
     "request": "^2.88.2",
     "typescript": "^3.7.3"
