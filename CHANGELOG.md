@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- minor([33](https://github.com/meateam/spike-service/issues/33)): fix health-check pkg
+
 ## [v2.0.1] - 2021-02-14
 
 ### Changed
