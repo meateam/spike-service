@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as grpc from 'grpc';
 import * as fs from 'fs';
 import * as jwt from 'jsonwebtoken';
-import { GrpcHealthCheck, HealthCheckResponse, HealthService } from 'grpc-ts-health-check';
+import { GrpcHealthCheck, HealthCheckResponse, HealthService, HealthClient, HealthCheckRequest } from 'grpc-ts-health-check';
 import { SpikeService, ISpikeServer } from '../proto/spike-service/generated/spike_grpc_pb';
 import * as C from './config';
 import {
@@ -19,11 +19,11 @@ const getTokenCreator = require('spike-get-token');
 
 const StatusesEnum = HealthCheckResponse.ServingStatus;
 
-const healthCheckStatusMap = {
+// tslint:disable-next-line: prefer-const
+let healthCheckStatusMap: any = {
     '': StatusesEnum.UNKNOWN,
-    serviceName: StatusesEnum.UNKNOWN,
+    'spike.spikeService': StatusesEnum.UNKNOWN,
 };
-const serviceNames: string[] = ['', 'spike.spikeService'];
 
 // Boolean describing if spike public key was obtained.
 let isSPBK: boolean = true;
@@ -190,8 +190,11 @@ class Server implements ISpikeServer {
 }
 
 export const grpcHealthCheck = new GrpcHealthCheck(healthCheckStatusMap);
+// tslint:disable-next-line: prefer-const
+let requests : HealthCheckRequest[] = [];
 
 function startServer() {
+    // Create the server
     const server = new grpc.Server();
     const spikeServer = new Server();
 
@@ -201,23 +204,38 @@ function startServer() {
     // Register the health service
     server.addService(HealthService, grpcHealthCheck);
 
-    setInterval(
-        function () {
-            const currStatus = (isSPBK && isRedisOK) ? StatusesEnum.SERVING : StatusesEnum.NOT_SERVING;
-            setHealthStatus(spikeServer, currStatus);
-        },
-        1000);
+    // Create the health client
+    const healthClient = new HealthClient(`${C.host}:${C.port}`, grpc.credentials.createInsecure());
 
-    // setHealthStatus(spikeServer, HealthCheckResponse.ServingStatus.SERVING);
+    // Set services
+    for (const service in healthCheckStatusMap) {
+        const request = new HealthCheckRequest();
+        request.setService(service);
+
+        requests.push(request);
+    }
+
+    setInterval(function () {
+        const currStatus = (isSPBK && isRedisOK) ? StatusesEnum.SERVING : StatusesEnum.NOT_SERVING;
+        requests.forEach((request) => { setHealthStatus(request, healthClient, currStatus); });
+    },          1000);
+
     server.bind(`${C.host}:${C.port}`, grpc.ServerCredentials.createInsecure());
     server.start();
     console.log(`Server is listening on port ${C.port}`);
 }
 
-function setHealthStatus(server: Server, status: number): void {
-    for (let i = 0; i < serviceNames.length; i++) {
-        grpcHealthCheck.setStatus(serviceNames[i], status);
-    }
+function setHealthStatus(request: HealthCheckRequest, healthClient: HealthClient, currStatus: HealthCheckResponse.ServingStatus): void {
+    const serviceName: string = request.getService();
+    healthCheckStatusMap[serviceName] = currStatus;
+
+    // Check health status, this will provide the current health status of the service when the request is executed.
+    healthClient.check(request, (error: Error | null, response: HealthCheckResponse) => {
+        if (error) {
+            console.log(`${serviceName} Service: Health Check Failed`);
+            console.log(error);
+        }
+    });
 }
 
 startServer();
